@@ -24,5 +24,6 @@ The color of a pixel corresponding to point z is determined based on the number 
 Not to worry, code is provided for you for the above. However, feel free to tweak it to create different images and to find out more about Julia sets.
 
 * About me:
--Student: [[http://lattes.cnpq.br/7093545604364909][Pablo José Pavan]]
--Email: [[pablo.pavan@inf.ufrgs.br][pablo.pavan@inf.ufrgs.br]]
+- Student: [[http://lattes.cnpq.br/7093545604364909][Pablo José Pavan]]
+- Email: [[pablo.pavan@inf.ufrgs.br][pablo.pavan@inf.ufrgs.br]]
+

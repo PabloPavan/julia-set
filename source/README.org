@@ -1,3 +1,12 @@
 * Source
 
 This folder contents the sources codes! 
+
+*To compile the programs use the Makefile.*
+
+* To run "sequential\under{julia}" the command is:
+
+./set\under{}{julia.exec} TAM FILE
+
+- TAM = Image Size
+- FILE = Output bmp file (eg output.bmp)
