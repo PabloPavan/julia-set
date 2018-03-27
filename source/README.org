@@ -7,7 +7,7 @@ This folder contents the sources codes!
 ** To run:
 
 - sequential_julia
-   -./set_julia.exec TAM FILE
-  - TAM = Image Size (eg. 1000)
-  - FILE = Output bmp file (eg. output.bmp)
+  -./set_julia.exec TAM FILE
+     - TAM = Image Size (eg. 1000)
+     - FILE = Output bmp file (eg. output.bmp)
  
