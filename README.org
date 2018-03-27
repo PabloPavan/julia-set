@@ -1,0 +1,28 @@
+* Introduction 
+
+This repository aims to store activity 1 of the discipline of High Performance Computing (CMP270) from UFRGS, taught by professors Phillipe A. O. Navaux and Lucas M. Schnorr.
+Activity 1 consists of developing the Julia set codes in a sequential version, later in a parallel version with MPI.
+The parallel version will have two implementations, one decomposing the data into 1-D and a second decomposing into 2-D.
+The activity follows the SimGrid tutorial, which can be accessed at this link [[https://simgrid.github.io/SMPI_CourseWare//01_topic/][https://simgrid.github.io/SMPI_CourseWare//01_topic/]]
+
+Executions are performed using SMPI and [[http://simgrid.gforge.inria.fr/][SimGrid]].
+
+
+The results of the runs are located in the [[./results/][results]] folder and the source codes are in the [[./source/][source]] folder.
+
+* About Julia Set:
+
+Julia is a fractal, i.e., an object that is self-similar across scales (you "zoom in" and you keep seeing similar structures/features). It is a generalization of the famous Mandelbrot set, which adorns many T-shirts (search for "Mandelbrot zoom" for psychedelic videos).
+
+The particular Julia set that we compute here is defined as follows. Given a point in the 2-D complex plane, we compute the series defined as:
+
+z0 = z
+zn + 1 = zn 2 + c
+where c = -0.79 + i * 0.15. Different values ​​of c lead to different images, and we know many values ​​that produces "pretty" images.
+The color of a pixel corresponding to point z is determined based on the number of iterations before the modulus of zn is above 2 (or until a maximum number of iterations is reached).
+
+Not to worry, code is provided for you for the above. However, feel free to tweak it to create different images and to find out more about Julia sets.
+
+* About me:
+-Student: [[http://lattes.cnpq.br/7093545604364909][Pablo José Pavan]]
+-Email: [[pablo.pavan@inf.ufrgs.br][pablo.pavan@inf.ufrgs.br]]
