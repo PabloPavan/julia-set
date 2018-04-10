@@ -14,7 +14,7 @@ compile:*.c
 	$(P_COMPILER) -o 1D_parallel_julia.exec 1D_parallel_julia.c  $(FLAGS) 
 	$(P_COMPILER) -o 1D_parallel_julia_no_io.exec 1D_parallel_julia_no_io.c  $(FLAGS) 
 	$(P_COMPILER) -o 2D_parallel_julia.exec 2D_parallel_julia.c  $(FLAGS) 
-	$(P_COMPILER) -o temp.exec temp.c  $(FLAGS) 
+#	$(P_COMPILER) -o temp.exec temp.c  $(FLAGS) 
 	@echo "Compilaçao concluida"
 
 clean:
