@@ -12,13 +12,13 @@ if [ ! $# -ge 5 ]
 	exit 1
 fi
 		
-echo "step; process; value" > ../results/$1_$2_$3_$5.csv
+echo "step; process; value" > ../results/smpi_$1_$2_$3_$5.csv
 for step in $(seq "$5"); do
-#	smpirun -hostfile ./simple_host_file.txt -platform ./simple_cluster.xml -np $2 ./$1 $3 $4 &> tmp
-	mpirun -np $2 ./$1 $3 $4 &> tmp
+	smpirun -np $2 -hostfile ./simple_host_file -platform ./simple_cluster.xml --cfg=smpi/host-speed:1000000000  ./$1 $3 $4 &> tmp
+	#mpirun -np $2 ./$1 $3 $4 &> tmp
 	for p in $(seq "$2"); do
 		let p=$p-1 
-		echo "$step"";" "$p"";" `cat tmp | egrep -w "$p:" | cut -d ':' -f2 | sed 's/\t//g'` >> ../results/$1_$2_$3_$5.csv
+		echo "$step"";" "$p"";" `cat tmp | egrep -w "$p:" | cut -d ':' -f2 | sed 's/\t//g'` >> ../results/smpi_$1_$2_$3_$5.csv
 	done
 	sleep 10
 	echo "step : $step"

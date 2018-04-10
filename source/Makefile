@@ -3,7 +3,7 @@
 COMPILER = gcc
 FLAGS = -O2 -lm -Wimplicit-function-declaration
 #mpi
-P_COMPILER = mpicc
+P_COMPILER = smpicc
 
 
 all: compile

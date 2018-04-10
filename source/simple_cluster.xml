@@ -1,9 +1,7 @@
-<!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid.dtd">
+<?xml version='1.0'?>
+<!DOCTYPE platform SYSTEM "http://simgrid.gforge.inria.fr/simgrid/simgrid.dtd">
 <platform version="4">
-<config>
-<prop id="smpi/running-power" value="1"></prop>
-</config>
-<AS id="AS0" routing="Full">
-  <cluster id="simple_cluster" prefix="host-" suffix=".me.org" radical="0-1023" speed="200Gf" bw="500MBps" lat="5us"/>
-</AS>
+  <AS id="AS0" routing="Full">
+    <cluster id="Cluster" prefix="P_" suffix=".god" radical="0-255" speed="1Gf" bw="225Mbps" lat="5us"/>
+  </AS>
 </platform>
