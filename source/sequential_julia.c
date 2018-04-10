@@ -114,16 +114,17 @@ int main(int argc, char *argv[]){
 
   size = atoi(argv[1]);
   
-  unsigned char *rgb = malloc(sizeof(unsigned char) * (size*(2*size)*3));
-	
+  unsigned char *rgb = malloc(sizeof(unsigned char) * (size * ( 2 * size ) * 3 ));
   tempo1();
-  //Calculo dos pixels
-  for(y=0;y<size;y++){
-    for(x=0;x<size*2;x++){
-	compute_julia_pixel(x ,y ,size*2 ,size ,1.0 ,&rgb[y*3*size*2+x*3]);
-    }
-  }   
+  int yx = 0;
+  for(yx = 0; yx < size * size * 2; yx++){
+  	x = yx % (2 * size);
+  	y = yx /  size / 2;
+    compute_julia_pixel(x ,y ,size*2 ,size ,1.0 ,&rgb[y*3*size*2+x*3]);
+  }
   tempo2();
+  
+ 
       
   int return_validation =  write_bmp_header(input,size*2,size);
   if(!return_validation){

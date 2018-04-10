@@ -1,6 +1,6 @@
 
 #include <sys/time.h>
-
+#include <string.h>
 
 struct timeval t1, t2;
 struct timezone tz1, tz2;
