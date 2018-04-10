@@ -14,7 +14,8 @@ fi
 		
 echo "step; process; value" > $1_$2_$5.csv
 for step in $(seq "$5"); do
-	mpirun -np $2 $1 $3 $4 &> tmp
+#	smpirun -hostfile ./simple_host_file.txt -platform ./simple_cluster.xml -np $2 ./$1 $3 $4 &> tmp
+	mpirun -np $2 ./$1 $3 $4 >> tmp
 	for p in $(seq "$2"); do
 		let p=$p-1 
 		echo "$step"";" "$p"";" `cat tmp | egrep -w "$p:" | cut -d ':' -f2 | sed 's/\t//g'` >> $1_$2_$5.csv
@@ -22,4 +23,4 @@ for step in $(seq "$5"); do
 	sleep 10
 	echo "step : $step"
 done
-rm -rf tmp
+#rm -rf tmp
