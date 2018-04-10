@@ -132,11 +132,9 @@ int main(int argc, char *argv[]){
   t0 = MPI_Wtime();
   for(y = begin[0] ; y < end[0]; y++)
     for(x = begin[1] ; x < end[1]; x++)
-      compute_julia_pixel(x, y, size * 2 , size, 1.0, &rgb[(y - begin[0]) * 3 * size * 2 + (x - begin[1]) * 3]);
+      compute_julia_pixel(x, y, size * 2 , size, MPI_rank*MPI_rank, &rgb[(y - begin[0]) * 3 * (end[1] - begin[1]) + (x - begin[1]) * 3]);
   t1 = MPI_Wtime();
-
-  // MPI_Gather(rgb, chunk * ( 2 * size ) * 3 , MPI_UNSIGNED_CHAR, rgb, chunk * ( 2 * size ) * 3 , MPI_UNSIGNED_CHAR, MPI_MASTER, MPI_COMM_WORLD);
-   
+  
   if(MPI_rank == MPI_MASTER){ 
     output = fopen(argv[2], "w");
 
@@ -153,42 +151,65 @@ int main(int argc, char *argv[]){
   
     fwrite(&rgb[0], sizeof(unsigned char), (chunk[1] * 3), output);
     fclose(output);
+
+    // printf("A - %d - p%d sending to %d\n", k++, MPI_rank, 1);
     MPI_Send(&flag, 1, MPI_UNSIGNED_CHAR, 1, 0, MPI_COMM_WORLD);
-    printf("%d - p%d sending to %d\n", k++, MPI_rank, 1);
     
     for(j = 1; j < chunk[0]; j++){
-      printf("%d - p%d waiting for %d\n", k++, MPI_rank, MPI_sqrt - 1);
+      // printf("A(%d) - %d - p%d waiting for %d\n",j, k++, MPI_rank, MPI_sqrt - 1);
       MPI_Recv(&flag, 1, MPI_UNSIGNED_CHAR, MPI_sqrt - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       output = fopen(argv[2], "a");
-      fwrite(&rgb[j * 3], sizeof(unsigned char), (chunk[1] * 3), output);
-      fclose(output);
-      printf("%d - p%d sending to %d\n", k++, MPI_rank, 1);
+      fwrite(&rgb[j * chunk[1] * 3], sizeof(unsigned char), (chunk[1] * 3), output);
+      fclose(output);      
+      // printf("A(%d) - %d - p%d sending to %d\n",j, k++, MPI_rank, 1);
       MPI_Send(&flag, 1, MPI_UNSIGNED_CHAR, 1, 0, MPI_COMM_WORLD);
     }
-  }else if((MPI_rank + 1) % MPI_sqrt == 0){
+  }
+  else if(rank[1] == 0){ 
+    // printf("B - %d - p%d waiting for %d\n", k++, MPI_rank, MPI_rank - 1);
+    MPI_Recv(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    output = fopen(argv[2], "a");
+    fwrite(&rgb[0], sizeof(unsigned char), (chunk[1] * 3), output);
+    fclose(output);
+    // printf("B - %d - p%d sending to %d\n", k++, MPI_rank, MPI_rank + 1);
+    MPI_Send(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank + 1, 0, MPI_COMM_WORLD);
+    
+    
+    for(j = 1; j < chunk[0]; j++){
+      // printf("B(%d) - %d - p%d waiting for %d\n", j, k++, MPI_rank, (rank[0] + 1) * MPI_sqrt - 1);
+      MPI_Recv(&flag, 1, MPI_UNSIGNED_CHAR, (rank[0] + 1) * MPI_sqrt - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+      output = fopen(argv[2], "a");
+      fwrite(&rgb[j * chunk[1] * 3], sizeof(unsigned char), (chunk[1] * 3), output);
+      fclose(output);
+      // printf("B(%d) - %d - p%d sending to %d\n", j, k++, MPI_rank, MPI_rank + 1);
+      MPI_Send(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank + 1, 0, MPI_COMM_WORLD);
+    }
+  }else if(rank[1] == MPI_sqrt - 1){
     for(j = 0; j < chunk[0]; j++){
-      printf("%d - p%d waiting for %d\n", k++, MPI_rank, MPI_rank - 1);
+      // printf("C(%d) - %d - p%d waiting for %d\n", j, k++, MPI_rank, MPI_rank - 1);
       MPI_Recv(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       output = fopen(argv[2], "a");
-      fwrite(&rgb[j * 3], sizeof(unsigned char), (chunk[1] * 3), output);
+      fwrite(&rgb[j * chunk[1] * 3], sizeof(unsigned char), (chunk[1] * 3), output);
       fclose(output);
       if(j == chunk[0] - 1){
-        printf("%d - p%d sending to %d\n", k++, MPI_rank, MPI_rank + 1);
-        MPI_Send(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank + 1, 0, MPI_COMM_WORLD);
+        if(MPI_rank != MPI_size - 1){
+          // printf("C(%d) - %d - p%d sending to %d\n", j, k++, MPI_rank, MPI_rank + 1);
+          MPI_Send(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank + 1, 0, MPI_COMM_WORLD);
+        }
       }
       else{
-        printf("%d - p%d sending to %d\n", k++, MPI_rank, MPI_rank + 1 - MPI_sqrt);
+        // printf("C(%d) - %d - p%d sending to %d\n",j, k++, MPI_rank, MPI_rank + 1 - MPI_sqrt);
         MPI_Send(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank + 1 - MPI_sqrt, 0, MPI_COMM_WORLD);
       }
     }
   }else{
     for(j = 0; j < chunk[0]; j++){
-      printf("%d - p%d waiting for %d\n", k++, MPI_rank, MPI_rank - 1);
+      // printf("D(%d) - %d - p%d waiting for %d\n", j, k++, MPI_rank, MPI_rank - 1);
       MPI_Recv(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
       output = fopen(argv[2], "a");
-      fwrite(&rgb[j * 3], sizeof(unsigned char), (chunk[1] * 3), output);
+      fwrite(&rgb[j * chunk[1] * 3], sizeof(unsigned char), (chunk[1] * 3), output);
       fclose(output);
-      printf("%d - p%d sending to %d\n", k++, MPI_rank, MPI_rank + 1);
+      // printf("D(%d) - %d - p%d sending to %d\n", j, k++, MPI_rank, MPI_rank + 1);
       MPI_Send(&flag, 1, MPI_UNSIGNED_CHAR, MPI_rank + 1, 0, MPI_COMM_WORLD);
     }
   }
